@@ -8,6 +8,7 @@ class FakeDB:
     def add_task(self, task: Task):
         task.id = len(self.tasks) + 1
         self.tasks.append(task)
+        print(task)
         return task
 
     def get_task(self, task_id: int):
@@ -32,5 +33,8 @@ class FakeDB:
     def delete_task(self, task_id: int):
         self.tasks = [task for task in self.tasks if task.id != task_id]
 
+    def reset_tasks(self):
+        self.tasks = []
+        return self.tasks
 
 db = FakeDB()
