@@ -67,6 +67,7 @@ classDiagram
 
 #### 3. Diagramas de secuencia UML
 
+
 ```mermaid
 sequenceDiagram
     participant Cliente
