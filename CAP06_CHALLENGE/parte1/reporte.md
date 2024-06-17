@@ -1,0 +1,3 @@
+## Reporte de experiencia en homework
+
+En primer lugar el desafío esta en que Python es un lenguaje desconocido para mí. Por lo que al no tener manejo del mismo me es dificil hacer un buen debug. Siguiendo el sprint review me encuentro que el formato que Codium me devuelve los test unitarios tiran error de consola, es por ello que revisando los test de referencia veo que hace uso de la librería pytest, usando decoradores e iteradores, haciendo uso de la referencia le pido a codium que refactorice los test 
