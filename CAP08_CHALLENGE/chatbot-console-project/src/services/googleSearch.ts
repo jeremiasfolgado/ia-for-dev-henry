@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { config } from '../config/config';
 
-interface SearchResult {
+export interface SearchResult {
   title: string;
   link: string;
   snippet: string;

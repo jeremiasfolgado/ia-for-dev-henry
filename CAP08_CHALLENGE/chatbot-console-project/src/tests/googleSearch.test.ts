@@ -1,37 +1,66 @@
-import { googleSearch } from '../services/googleSearch';
-import axios from 'axios';
+const axios = require('axios');
+const { googleSearch } = require('../services/googleSearch');
+const { config } = require('../config/config');
 
-jest.mock('axios', () => ({
-post: jest.fn(),
-}));
+jest.mock('axios');
+
 describe('googleSearch', () => {
-  const mockedAxios = axios as jest.Mocked<typeof axios>;
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-  it('should return formatted search results', async () => {
+  test('debería realizar una búsqueda exitosa y devolver resultados formateados', async () => {
     const mockResponse = {
       data: {
         organic: [
-          { title: 'Test Title 1', link: 'http://test1.com', snippet: 'Test Snippet 1' },
-          { title: 'Test Title 2', link: 'http://test2.com', snippet: 'Test Snippet 2' },
-        ],
-      },
+          { title: 'Resultado 1', link: 'http://ejemplo1.com', snippet: 'Descripción 1' },
+          { title: 'Resultado 2', link: 'http://ejemplo2.com', snippet: 'Descripción 2' },
+        ]
+      }
     };
+    axios.post.mockResolvedValue(mockResponse);
 
-    mockedAxios.post.mockResolvedValue(mockResponse);
+    const results = await googleSearch('prueba de búsqueda');
 
-    const results = await googleSearch('test query');
-
-    expect(results).toHaveLength(2);
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://google.serper.dev/search',
+      {
+        q: 'prueba de búsqueda',
+        gl: config.searchCountry,
+        hl: config.searchLanguage,
+      },
+      {
+        headers: {
+          'X-API-KEY': config.serperApiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    expect(results.length).toBe(2);
     expect(results[0]).toEqual({
-      title: 'Test Title 1',
-      link: 'http://test1.com',
-      snippet: 'Test Snippet 1',
+      title: 'Resultado 1',
+      link: 'http://ejemplo1.com',
+      snippet: 'Descripción 1'
     });
   });
 
-  it('should handle errors', async () => {
-    mockedAxios.post.mockRejectedValue(new Error('API Error'));
+  test('debería limitar los resultados a 5 incluso si la API devuelve más', async () => {
+    const mockResponse = {
+      data: {
+        organic: Array(10).fill({ title: 'Título', link: 'http://ejemplo.com', snippet: 'Descripción' })
+      }
+    };
+    axios.post.mockResolvedValue(mockResponse);
 
-    await expect(googleSearch('test query')).rejects.toThrow('API Error');
+    const results = await googleSearch('prueba');
+
+    expect(results.length).toBe(5);
+  });
+
+  test('debería manejar errores y lanzarlos', async () => {
+    const mockError = new Error('Error de API');
+    axios.post.mockRejectedValue(mockError);
+
+    await expect(googleSearch('prueba error')).rejects.toThrow('Error de API');
   });
 });
