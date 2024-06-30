@@ -4,9 +4,15 @@ import { googleSearch } from './services/googleSearch';
 import { Conversation } from './models/conversation';
 
 const groq = new Groq({ apiKey: config.groqApiKey });
-const conversation = new Conversation();
 
-export async function chatbot(userInput: string): Promise<string> {
+/**
+ * Handles a user's input and generates a response based on a Google search.
+ *
+ * @param userInput - The user's input text.
+ * @param conversation - The current conversation object.
+ * @returns The generated response.
+ */
+export async function chatbot(userInput: string, conversation:Conversation): Promise<string> {
   conversation.addMessage('user', userInput);
 
   // Realizar búsqueda en Google

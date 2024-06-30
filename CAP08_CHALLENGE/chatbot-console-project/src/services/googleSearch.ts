@@ -7,6 +7,12 @@ export interface SearchResult {
   snippet: string;
 }
 
+/**
+ * Performs a Google search using the Serper API and returns the top 5 search results.
+ *
+ * @param query - The search query to be executed.
+ * @returns An array of `SearchResult` objects containing the title, link, and snippet for each search result.
+ */
 export async function googleSearch(query: string): Promise<SearchResult[]> {
   try {
     const response = await axios.post(
